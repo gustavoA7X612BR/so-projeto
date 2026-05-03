@@ -12,8 +12,9 @@ class Scheduler:
     def schedule(self):
         for processor in self.hardware.processors:
             if not processor.isOn:  # If the processor is idle
-                if self.ready_queue:
+                if self.ready_queue and self.ready_queue[0].startTime <= self.hardware.clock.current_time:
                     self.current_task = self.ready_queue.pop(0)  # Get the next task from the ready queue
                     self.current_task.state = 'running'
                 else:
+                    print(f"Nenhuma tarefa pronta para execução no tempo {self.hardware.clock.current_time}. Desligando processador {self.hardware.processors.index(processor)}.")
                     processor.shutdown()  # No tasks to run, shut down the processor

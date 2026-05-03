@@ -14,9 +14,9 @@ class Hardware:
             args:
                 task (tcb): A tarefa a ser processada (opcional). Se None, os processadores ficarão ociosos.
         """
-        # Run the hardware, for example by executing processes on the processors
-        print(f"Thick: {self.clock.current_time}")
         self.clock.tick()  # Simulate time passing
         for processor in self.processors:
             if not processor.isOn:
-                processor.execute(task)  # Execute a task on the processor     
+                print(f"Processador {self.processors.index(processor)} está desligado.")
+            else:
+                processor.execute()  # Simulate the processor executing a task

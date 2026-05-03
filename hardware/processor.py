@@ -7,18 +7,20 @@ class Processor:
         """
         self.clock = clock
         self.isOn = False
-    def execute(self, task):
+        self.task = None
+
+    def setTask(self, task):
+        self.task = task
+        self.isOn = True
+    def execute(self):
         """Executa uma tarefa no processador, simulando o processamento e a passagem do tempo.
             args:
                 task (tcb): A tarefa a ser executada pelo processador.
         """
         self.isOn = True
-
-        if task:
-            task.remaining_time -= 1  # Simula o processamento da tarefa, reduzindo o tempo restante
-            print(f"Processando {task} no processador. Tempo restante: {task.remaining_time}")
-        else:
-            self.shutdown()
+        if self.task:
+            print(f"Processando {self.task} no processador. Tempo restante: {self.task.remaining_time}")
+            self.task.remaining_time -= 1  # Simula o processamento da tarefa, reduzindo o tempo restante
     def shutdown(self):
-        """Desliga o processador, indicando que ele não está mais executando tarefas."""
         self.isOn = False
+        self.task = None
