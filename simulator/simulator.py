@@ -5,7 +5,7 @@ from so import So
 
 class Simulator:
     """Simulador do sistema operacional, responsável por criar o hardware, iniciar o sistema operacional e controlar a execução da simulação."""
-    def __init__(self, mode, num_processors=4, tasks=[]):
+    def __init__(self, mode, algorithm, num_processors=4, tasks=[]):
         """Inicializa o simulador com um número especificado de processadores e uma lista de tarefas.
         args:
             num_processors (int): O número de processadores a serem simulados.
@@ -13,7 +13,7 @@ class Simulator:
         """
         hardware = Hardware(num_processors)
         self.mode = mode
-        self.os = So(hardware, tasks)
+        self.os = So(hardware, algorithm, tasks)
         self.is_running = False
         self.snapshots = []  # Lista para armazenar os snapshots do estado do sistema
     def start(self):
@@ -31,9 +31,9 @@ class Simulator:
         self.os.run()
         # Create a snapshot of the current state
         snapshot = Snapshot(
-            readyQueue=self.os.readyQueue,
+            readyQueue=self.os.scheduler.readyQueue,
             processors=self.os.hardware.processors,
-            tasks=self.os.tasks
+            tasks=self.os.scheduler.tasks
         )
         self.snapshots.append(snapshot)
         time.sleep(1)  # Simulate time passing between runs
@@ -43,11 +43,11 @@ class Simulator:
         if self.snapshots:
             last_snapshot = self.snapshots.pop()  # Remove o último snapshot da lista
             # Restaura o estado do sistema operacional com base no snapshot
-            self.os.readyQueue = last_snapshot.readyQueue
+            self.os.scheduler.readyQueue = last_snapshot.readyQueue
             for processor, task in zip(self.os.hardware.processors, last_snapshot.processors):
                 processor.task = task
                 processor.isOn = bool(task)  # Define o estado do processador com base na presença de uma tarefa
-            self.os.tasks = last_snapshot.tasks
+            self.os.scheduler.tasks = last_snapshot.tasks
             print("Simulação retrocedida para o estado anterior.")
         else:
             print("Não há snapshots disponíveis para retroceder.")

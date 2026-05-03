@@ -12,6 +12,12 @@ class Processor:
     def setTask(self, task):
         self.task = task
         self.isOn = True
+
+    def removeTask(self):
+        task = self.task
+        self.task = None
+        return task
+
     def execute(self):
         """Executa uma tarefa no processador, simulando o processamento e a passagem do tempo.
             args:
